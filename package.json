@@ -3,7 +3,6 @@
     "version":          "0.5.0",
     "description":      "Crosswalk's WebView for React Native on Android",
     "scripts":          {
-        "postinstall": "node get_library.js",
         "lint":        "eslint ."
     },
     "repository":       {

@@ -52,7 +52,7 @@ class CrosswalkWebView extends XWalkView implements LifecycleEventListener {
     }
 
     public CrosswalkWebView (ReactContext reactContext, Activity _activity) {
-        super(reactContext, _activity);
+        super(_activity);
 
         activity = _activity;
         eventDispatcher = reactContext.getNativeModule(UIManagerModule.class).getEventDispatcher();
