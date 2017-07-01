@@ -16,6 +16,7 @@ import org.xwalk.core.XWalkNavigationHistory;
 import org.xwalk.core.XWalkResourceClient;
 import org.xwalk.core.XWalkUIClient;
 import org.xwalk.core.XWalkView;
+import org.xwalk.core.XWalkPreferences;
 
 import com.facebook.react.views.webview.events.TopMessageEvent;
 
@@ -53,6 +54,8 @@ class CrosswalkWebView extends XWalkView implements LifecycleEventListener {
 
     public CrosswalkWebView (ReactContext reactContext, Activity _activity) {
         super(_activity);
+
+        XWalkPreferences.setValue(XWalkPreferences.REMOTE_DEBUGGING, true);
 
         activity = _activity;
         eventDispatcher = reactContext.getNativeModule(UIManagerModule.class).getEventDispatcher();
