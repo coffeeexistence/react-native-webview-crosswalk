@@ -4,7 +4,6 @@ import React, { PropTypes } from 'react';
 import ReactNative, { requireNativeComponent, View } from 'react-native';
 
 var {
-    addons: { PureRenderMixin },
     NativeModules: { UIManager, CrosswalkWebViewManager: { JSNavigationScheme } }
 } = ReactNative;
 
@@ -12,33 +11,10 @@ var resolveAssetSource = require('react-native/Libraries/Image/resolveAssetSourc
 
 var WEBVIEW_REF = 'crosswalkWebView';
 
-var CrosswalkWebView = React.createClass({
-    mixins:    [PureRenderMixin],
-    statics:   { JSNavigationScheme },
-    propTypes: {
-        injectedJavaScript:      PropTypes.string,
-        localhost:               PropTypes.bool.isRequired,
-        onError:                 PropTypes.func,
-        onMessage:               PropTypes.func,
-        onNavigationStateChange: PropTypes.func,
-        onProgress:              PropTypes.func,
-        source:                  PropTypes.oneOfType([
-            PropTypes.shape({
-                uri: PropTypes.string,  // URI to load in WebView
-            }),
-            PropTypes.shape({
-                html: PropTypes.string, // static HTML to load in WebView
-            }),
-            PropTypes.number,           // used internally by React packager
-        ]),
-        url:                     PropTypes.string,
-        ...View.propTypes
-    },
-    getDefaultProps () {
-        return {
-            localhost: false
-        };
-    },
+class CrosswalkWebView extends React.PureComponent {
+
+    state = { webviewLoaded: false }
+
     render () {
         var source = this.props.source || {};
         if (this.props.url) {
@@ -57,66 +33,101 @@ var CrosswalkWebView = React.createClass({
                 source={ resolveAssetSource(source) }
             />
         );
-    },
-    getWebViewHandle () {
+    }
+
+    getWebViewHandle = () => {
         return ReactNative.findNodeHandle(this.refs[WEBVIEW_REF]);
-    },
-    onNavigationStateChange (event) {
+    }
+
+    onNavigationStateChange = (event) => {
         var { onNavigationStateChange } = this.props;
         if (onNavigationStateChange) {
             onNavigationStateChange(event.nativeEvent);
         }
-    },
-    onError (event) {
+    }
+
+    onError = (event) => {
         var { onError } = this.props;
         if (onError) {
             onError(event.nativeEvent);
         }
-    },
-    onProgress (event) {
-        var { onProgress } = this.props;
+    }
+
+    onProgress = (event) => {
+        var { onProgress, onLoad } = this.props;
         if (onProgress) {
             onProgress(event.nativeEvent.progress / 100);
         }
-    },
-    goBack () {
+        if (onLoad && event.nativeEvent.progress === 100 && !this.state.webviewLoaded) {
+          this.setState({webviewLoaded: true});
+          onLoad();
+        }
+    }
+
+    goBack = () => {
         UIManager.dispatchViewManagerCommand(
             this.getWebViewHandle(),
             UIManager.CrosswalkWebView.Commands.goBack,
             null
         );
-    },
-    goForward () {
+    }
+
+    goForward = () => {
         UIManager.dispatchViewManagerCommand(
             this.getWebViewHandle(),
             UIManager.CrosswalkWebView.Commands.goForward,
             null
         );
-    },
-    reload () {
+    }
+
+    reload = () => {
         UIManager.dispatchViewManagerCommand(
             this.getWebViewHandle(),
             UIManager.CrosswalkWebView.Commands.reload,
             null
         );
-    },
-    postMessage (data) {
+    }
+
+    postMessage = (data) => {
         UIManager.dispatchViewManagerCommand(
             this.getWebViewHandle(),
             UIManager.CrosswalkWebView.Commands.postMessage,
             [String(data)]
         );
-    },
-    onMessage (event) {
+    }
+
+    onMessage = (event) => {
         var {onMessage} = this.props;
         onMessage && onMessage(event);
     }
-});
+}
+
+CrosswalkWebView.propTypes = {
+    injectedJavaScript:      PropTypes.string,
+    localhost:               PropTypes.bool.isRequired,
+    onError:                 PropTypes.func,
+    onMessage:               PropTypes.func,
+    onNavigationStateChange: PropTypes.func,
+    onProgress:              PropTypes.func,
+    source:                  PropTypes.oneOfType([
+        PropTypes.shape({
+            uri: PropTypes.string,  // URI to load in WebView
+        }),
+        PropTypes.shape({
+            html: PropTypes.string, // static HTML to load in WebView
+        }),
+        PropTypes.number,           // used internally by React packager
+    ]),
+    url:                     PropTypes.string,
+    ...View.propTypes
+};
+
+CrosswalkWebView.defaultProps = {
+  localhost: false
+};
 
 var NativeCrosswalkWebView = requireNativeComponent('CrosswalkWebView', CrosswalkWebView, {
     nativeOnly: {
         messagingEnabled: PropTypes.bool,
     },
 });
-
-export default CrosswalkWebView;
