@@ -1,9 +1,11 @@
 'use strict';
 
-import React, { PropTypes } from 'react';
-import ReactNative, { requireNativeComponent, View } from 'react-native';
+import React from 'react';
+import PropTypes from 'prop-types';
+import ReactNative, { requireNativeComponent, View, Platform } from 'react-native';
 
 var {
+    // addons: { PureRenderMixin },
     NativeModules: { UIManager, CrosswalkWebViewManager: { JSNavigationScheme } }
 } = ReactNative;
 
@@ -13,10 +15,15 @@ var WEBVIEW_REF = 'crosswalkWebView';
 
 class CrosswalkWebView extends React.PureComponent {
 
-    state = { webviewLoaded: false }
+    // statics = { JSNavigationScheme }
+
+    state = {
+      webviewLoaded: false
+    }
 
     render () {
         var source = this.props.source || {};
+        // console.log('loading: ' + source.uri);
         if (this.props.url) {
             source.uri = this.props.url;
         }
@@ -26,11 +33,14 @@ class CrosswalkWebView extends React.PureComponent {
             onCrosswalkWebViewError: this.onError,
             onCrosswalkWebViewProgress: this.onProgress
         });
+        var resolvedSource = resolveAssetSource(source);
+        // console.log('creating with props: ', nativeProps);
+        // console.log('creating with props: ' + JSON.stringify(nativeProps));
         return (
             <NativeCrosswalkWebView
                 { ...nativeProps }
                 ref={ WEBVIEW_REF }
-                source={ resolveAssetSource(source) }
+                source={ resolvedSource }
             />
         );
     }
@@ -97,6 +107,7 @@ class CrosswalkWebView extends React.PureComponent {
     }
 
     onMessage = (event) => {
+        // console.log('CWV got message: ' + event);
         var {onMessage} = this.props;
         onMessage && onMessage(event);
     }
@@ -131,3 +142,5 @@ var NativeCrosswalkWebView = requireNativeComponent('CrosswalkWebView', Crosswal
         messagingEnabled: PropTypes.bool,
     },
 });
+
+export default CrosswalkWebView;
