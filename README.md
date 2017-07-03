@@ -59,10 +59,13 @@ allprojects {
 ...
 dependencies {
   ...
-  compile (name: "xwalk_core_library-22.52.561.4", ext: "aar")     // <--- add this line
+  compile (name: "xwalk_core_library_23-input-patch", ext: "aar")     // <--- add this line
   compile project(':CrosswalkWebView')                             // <--- add this line
 }
 ```
+
+* Drop `xwalk_core_library_23-input-patch.aar` from _node_modules/react-native-webview-crosswalk/libs_ into _android/app/libs_.
+
 * Register package :
 
 If [0.1.0](https://github.com/jordansexton/react-native-webview-crosswalk/releases/tag/v0.1.0) or [0.2.0](https://github.com/jordansexton/react-native-webview-crosswalk/releases/tag/v0.2.0)+ used add code into MainActivity.java
