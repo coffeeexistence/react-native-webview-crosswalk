@@ -1,10 +1,6 @@
 # react-native-webview-crosswalk
 Crosswalk's WebView for React Native on Android.
 
-[![npm version](http://img.shields.io/npm/v/react-native-webview-crosswalk.svg?style=flat-square)](https://npmjs.org/package/react-native-webview-crosswalk "View this project on npm")
-[![npm downloads](http://img.shields.io/npm/dm/react-native-webview-crosswalk.svg?style=flat-square)](https://npmjs.org/package/react-native-webview-crosswalk "View this project on npm")
-[![npm licence](http://img.shields.io/npm/l/react-native-webview-crosswalk.svg?style=flat-square)](https://npmjs.org/package/react-native-webview-crosswalk "View this project on npm")
-
 ### Dependencies
 
 * [0.4.0](https://github.com/jordansexton/react-native-webview-crosswalk/releases/tag/v0.4.0)+: `react-native >=0.32.0`, `react >= 15.3.0`
@@ -22,7 +18,7 @@ Crosswalk's WebView for React Native on Android.
 ```shell
 npm install react-native-webview-crosswalk --save
 mkdir android/app/libs
-cp node_modules/react-native-webview-crosswalk/libs/xwalk_core_library-22.52.561.4.aar android/app/libs/
+cp node_modules/react-native-webview-crosswalk/libs/xwalk_core_library_23-input-patch.aar android/app/libs/
 ```
 
 ### Include module in your Android project
@@ -63,8 +59,6 @@ dependencies {
   compile project(':CrosswalkWebView')                             // <--- add this line
 }
 ```
-
-* Drop `xwalk_core_library_23-input-patch.aar` from _node_modules/react-native-webview-crosswalk/libs_ into _android/app/libs_.
 
 * Register package :
 
